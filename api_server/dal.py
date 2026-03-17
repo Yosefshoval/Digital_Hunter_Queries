@@ -1,5 +1,4 @@
 from sql_conn import SqlConnection
-import DigitalHunter_map
 
 client = SqlConnection()
 
@@ -41,24 +40,21 @@ def top_unidentified_entity():
 def waked_up_targets():
     query = """
         SELECT 
-            intel_signals.entity_id, 
-            SUM(intel_signals.distance_from_last) as distance, 
-            
-        FROM intel_signals
-        JOIN attacks 
-            ON intel_signals.entity_id = attacks.entity_id
-        WHERE 
-            intel_signals.timestamp <= DATE_SUB(attacks.timestamp, INTERVAL 3 hour)
-            AND intel_signals.timestamp >= DATE_SUB(attacks.timestamp, INTERVAL 3 hour)
-        
-        GROUP BY intel_signals.entity_id
-        HAVING distance = 0
-        OR distance >= 10
+            entity_id, 
+            SUM(distance_from_last) as distance,
+            timestamp
+        FROM 
+            (
+            SELECT * FROM intel_signals
+            WHERE 
+                HOUR(timestamp) BETWEEN 8 AND 20
+                OR ((HOUR(timestamp) BETWEEN 20 AND 24) OR (HOUR(timestamp) BETWEEN 0 AND 8))
+            ) t1
+        GROUP BY entity_id, timestamp             
         ;
     """
     result = client.execute_query(query)
     return result
-
 
 
 def get_coords_by_id(target_id: str):

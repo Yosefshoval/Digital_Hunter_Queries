@@ -1,31 +1,15 @@
 import mysql.connector
 from pprint import pprint
-
-connection_config = {
-      "host": "localhost",
-      "port": 3307,
-      "user": "root",
-      "password": "root",
-      "database": "digital_hunter"
-    }
-p = "kjSe#T53;G6n"
-conn = mysql.connector.connect(
-    host="localhost",
-    port=3307,
-    user="root",
-    password="root",
-    database="digital_hunter"
-)
-
+import os
 
 class SqlConnection:
     def __init__(self):
         self.client = mysql.connector.connect(
-            host="localhost",
-            port=3307,
-            user="root",
-            password="root",
-            database="digital_hunter"
+            host=os.getenv("SQL_HOST", "localhost"),
+            port=int(os.getenv("SQL_PORT", "3307")),
+            user=os.getenv("SQL_USERNAME", "root"),
+            password=os.getenv("SQL_PASSWORD", "root"),
+            database=os.getenv("SQL_DATABASE", "digital_hunter")
             )
 
     def execute_query(self, query: str):

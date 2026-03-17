@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 from dal import *
 import mysql.connector.errors as sql_err
-from api_server import DigitalHunter_map
+from api_server.maps_data import DigitalHunter_map
 
 router = APIRouter()
 
-exceptions = (sql_err.ProgrammingError, sql_err.Error)
+exceptions = (sql_err.ProgrammingError, sql_err.Error, sql_err.DatabaseError)
 
 @router.get('/query/top-level')
 def get_top_level():
@@ -51,3 +51,5 @@ def get_route(target_id: str):
         points.append((c1, c2))
     DigitalHunter_map.plot_map_with_geometry(points)
     return "success"
+
+get_route('TGT-007')
