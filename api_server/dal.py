@@ -66,4 +66,12 @@ def get_coords_by_id(target_id: str):
     return result
 
 
+def find_bonding_events():
+    query = """
+        SELECT * FROM intel_signals
+        WHERE distance >= 1
+            AND entity1 = 99 AND entity2 = 1
+    """
 
+
+""".הפיזי והמרחק מפגש זמן ,entity_id_asset, entity_id_prority """
