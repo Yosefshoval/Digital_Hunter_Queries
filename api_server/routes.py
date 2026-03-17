@@ -20,3 +20,12 @@ def get_count_signal_type():
         return count_signal_type()
     except exceptions as e:
         pprint(e)
+
+
+@router.get('/query/top-unidentified-entity')
+def get_top_unidentified_entity():
+    try:
+        return top_unidentified_entity()
+    except exceptions as e:
+        pprint(e)
+
