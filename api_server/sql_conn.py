@@ -1,4 +1,5 @@
 import mysql.connector
+from pprint import pprint
 
 connection_config = {
       "host": "localhost",
@@ -16,10 +17,21 @@ conn = mysql.connector.connect(
     database="digital_hunter"
 )
 
-print(conn.is_connected())
-with conn.cursor() as cursor:
-    result = cursor.execute("USE digital_hunter; SHOW Tables;")
-    print(conn)
 
-    print(cursor)
-print(result)
+class SqlConnection:
+    def __init__(self):
+        self.client = mysql.connector.connect(
+            host="localhost",
+            port=3307,
+            user="root",
+            password="root",
+            database="digital_hunter"
+            )
+
+    def execute_query(self, query: str):
+        with self.client.cursor(dictionary=True) as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+        return result
+
+
