@@ -4,6 +4,10 @@ app = FastAPI()
 
 app.include_router(router)
 
+@app.get('/home')
+def home():
+    return {"message": "service healthy"}
+
 
 if __name__ == "__main__":
     import uvicorn

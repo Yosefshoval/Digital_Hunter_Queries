@@ -14,3 +14,13 @@ def top_level():
     return result
 
 
+def count_signal_type():
+    query = """
+        SELECT COUNT(*) as type_count, signal_type FROM intel_signals
+        GROUP BY signal_type
+        ORDER BY type_count DESC;
+    """
+    result = client.execute_query(query)
+    return result
+
+
