@@ -40,22 +40,32 @@ def top_unidentified_entity():
 def waked_up_targets():
     query = """
         SELECT 
-            entity_id, 
-            SUM(distance_from_last) as distance,
-            timestamp
-        FROM 
+            SUM(morning.distance_from_last) AS distance, morning.timestamp, morning.entity_id FROM 
             (
-            SELECT * FROM intel_signals
-            WHERE 
-                HOUR(timestamp) BETWEEN 8 AND 20
-                OR ((HOUR(timestamp) BETWEEN 20 AND 24) OR (HOUR(timestamp) BETWEEN 0 AND 8))
-            ) t1
-        GROUP BY entity_id, timestamp             
+                SELECT timestamp, entity_id, distance_from_last FROM intel_signals
+                WHERE (EXTRACT(HOUR FROM timestamp) BETWEEN 20 AND 24) OR (EXTRACT(HOUR FROM timestamp) BETWEEN 0 AND 7)
+                ) morning
+            
+            UNION ALL
+            
+            SELECT 
+                SUM(distance_from_last) AS distance, timestamp, entity_id FROM
+                (
+                    SELECT timestamp, entity_id, distance_from_last FROM intel_signals
+                    WHERE EXTRACT(HOUR FROM timestamp) BETWEEN 20 AND 8
+                    ) tmp
+                    GROUP BY entity_id
+                    HAVING distance >= 10
+                ) noon
+                
+            WHERE morning.entity_id = noon.entity_id
         ;
     """
     result = client.execute_query(query)
     return result
 
+
+print(waked_up_targets())
 
 def get_coords_by_id(target_id: str):
     query = f"""
@@ -72,6 +82,3 @@ def find_bonding_events():
         WHERE distance >= 1
             AND entity1 = 99 AND entity2 = 1
     """
-
-
-""".הפיזי והמרחק מפגש זמן ,entity_id_asset, entity_id_prority """

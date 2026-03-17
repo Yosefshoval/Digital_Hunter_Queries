@@ -50,6 +50,6 @@ def get_route(target_id: str):
         c1, c2 = float(str(c[1])[:5]), float(str(c[0])[:5])
         points.append((c1, c2))
     DigitalHunter_map.plot_map_with_geometry(points)
-    return "success"
+    return points
 
 get_route('TGT-007')
